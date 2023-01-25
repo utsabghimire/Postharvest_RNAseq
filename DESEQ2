@@ -1,0 +1,41 @@
+FILE NAME: dummy rna seq.txt 
+3 replicates for rach control and treatment --only reads: control and treatments 
+
+
+# Import the count data
+countData <- read.table("dummy rna seq.txt", header=TRUE, row.names=1)
+
+# Create a design matrix
+design <- as.matrix(data.frame(condition=c(rep("control",3), rep("treatment",3))))
+colnames(design) <- "condition"
+
+# Run DESeq2
+dds <- DESeqDataSetFromMatrix(countData, design, ~ condition)
+dds <- DESeq(dds)
+
+# Get the results
+res <- results(dds)
+
+print(res)
+
+# View the results
+head(res)
+This script assumes that your count data is in a tab-separated file, with the first row containing the column names "Gene_name", "D7T10C1", "D7T10C2", "D7T10C3", "D14T10M1", "D14T10M2", "D14T10M3" respectively, and that the first column contains the gene names.
+You can adjust the script by checking the format of your data and also if you want to filter the results by some criteria like adjusted p-value or log2 fold change.
+   
+   
+   
+   Download your results
+   
+   
+# Load your results into a dataframe
+results <- read.table("dummy rna seq.txt", header = TRUE, sep = "\t")
+
+# Use the write.table function to save the results to a tab-separated file
+write.table(results, file = "rnaseq_results.txt", sep = "\t", row.names = FALSE)
+write.xlsx(results, "rnaseq_results.xlsx")
+
+
+install.packages("utils")
+library(utils)
+download(res, "deseq2_results.txt")
