@@ -1,0 +1,24 @@
+data <- data.frame(
+    RNA_seq = c(-2.273194063, 3.518839546, 0.613404098),
+    qPCR = c(0.480, 2.340, 1.990),
+    Label = c("D7T4M", "D7T4CA", "D7T4E")
+  Color = c("red", "blue", "green")
+)
+  correlation_coefficient <- cor(data$RNA_seq, data$qPCR)
+# Create the plot (your existing code)
+plot <- ggplot(data, aes(x = RNA_seq, y = qPCR, label = Label, color = Label)) +
+  geom_point(size = 6) +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  labs(title = paste("SAG14-LOC106313817 in D7T4 (Correlation =", round(correlation_coefficient, 2), ")"),
+       x = "RNA seq", y = "qPCR") +
+  theme_minimal() +
+  theme(axis.title = element_text(size = 18, face = "bold"),
+        axis.text.y = element_text(size = 14, face = "bold"),
+        plot.title = element_text(size = 20, face = "bold"),
+        legend.position = "right") +
+  geom_text(aes(x = -1, y = qPCR, hjust = 1), size = 0) +
+  guides(color = guide_legend(title = "Treatments"))
+
+# Save the current plot
+ggsave("scatterplot2.jpg", plot = plot, width = 9, height = 6, dpi = 600)
+
