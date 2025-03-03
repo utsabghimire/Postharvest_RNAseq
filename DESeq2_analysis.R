@@ -1,7 +1,6 @@
 # --------------------------------------------------------------
 # Differential Expression Analysis Using DESeq2
 # Author: Utsab Ghimire
-# Date: YYYY-MM-DD
 # Description:
 #   - This script performs RNA-seq differential expression analysis
 #     using DESeq2.
