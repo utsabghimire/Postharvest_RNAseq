@@ -47,7 +47,20 @@ log2FoldChange: Positive = Upregulated, Negative = Downregulated.
 p-value: Statistical significance of differential expression.
 padj: Adjusted p-value (FDR correction).
 
+Bar Graphs
+Generate bar graphs from RNA-seq data:
+source("scripts/bar_graphs.R")
+The plots are saved in the plots/ folder.
 
+RNA-seq vs qPCR Correlation
+Run the correlation script:
+source("scripts/correlation_coefficient.R")
+The correlation plot is saved in plots/RNAseq_vs_qPCR_correlation.jpg.
+📌 Example Plots
+
+📊 GH3.17-like Bar Graph
+
+📊 RNA-seq vs qPCR Correlation
 👨‍💻 Author
 Utsab Ghimire
  Research Focus: Postharvest senescence & transcriptomics
