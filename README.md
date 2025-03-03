@@ -1,24 +1,53 @@
-# Create a data frame from the given data
-data <- data.frame(
-  Treatment = c("D7T4M", "D7T10M", "D14T4E", "D14T10E"),
-  FoldChange = c(2.203139515, 4.404667725, -2.98908747, -4.094857433)
-)
+# **RNA-seq Differential Expression Analysis Using DESeq2** 🎯🧬
 
-# Create a vector to specify colors (green for "M" and red for "E")
-bar_colors <- ifelse(grepl("M", data$Treatment), "green", "red")
+## **📌 Overview**
+This repository contains an **RNA-seq analysis pipeline** using **DESeq2** for differential expression analysis between control and treatment conditions. The script processes raw count data, performs normalization, statistical testing, and outputs differentially expressed genes.
 
-# Create the bar plot with elongated y-axis
-bp <- barplot(data$FoldChange, col = bar_colors, names.arg = data$Treatment,
-              main = "GH3.17-like", xlab = "Treatment", ylab = "Fold Change",
-              ylim = range(data$FoldChange) + c(-1, 1))
+## **📂 Files in This Repository**
+- **`DESeq2_analysis.R`** – The main script for RNA-seq differential expression analysis.
+- **`dummy_rna_seq.txt`** – Sample input count matrix (gene expression data).
+- **`deseq2_results.txt`** – Output file with differentially expressed genes (tab-separated).
+- **`deseq2_results.xlsx`** – Output file in Excel format for easy visualization.
 
-# Add error bars
-# Define error values
-errors <- c(0.28, 0.07, 0.16, 0.13)
+## **🛠 Requirements**
+Before running the script, install the required packages in R:
+```r
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+BiocManager::install("DESeq2")
+install.packages("openxlsx")  # For exporting results to Excel
+🔬 Data Format
 
-# Add error bars to the plot
-for (i in 1:length(data$FoldChange)) {
-  arrows(x0 = bp[i], y0 = data$FoldChange[i] - errors[i],
-         x1 = bp[i], y1 = data$FoldChange[i] + errors[i],
-         angle = 90, code = 3, length = 0.05)
-}
+The input count matrix should be a tab-separated file with the following format:
+
+Gene_name	Control_1	Control_2	Control_3	Treatment_1	Treatment_2	Treatment_3
+GeneA	100	120	130	200	250	270
+GeneB	50	55	60	80	90	85
+The first column contains gene names.
+The next columns contain raw read counts for each replicate
+🚀 How to Run the Analysis
+
+Clone the repository:
+git clone https://github.com/your-username/RNAseq_DESeq2_Analysis.git
+cd RNAseq_DESeq2_Analysis
+Open DESeq2_analysis.R in RStudio and modify the input file path if necessary:
+file_path <- "dummy_rna_seq.txt"  # Update if using a different file
+Run the script in R:
+source("DESeq2_analysis.R")
+Output files:
+deseq2_results.txt → Tab-separated results.
+deseq2_results.xlsx → Excel file for easy review.
+📊 Understanding the Output
+
+The output file contains key statistical values:
+
+Gene	log2FoldChange	p-value	padj
+GeneA	1.52	0.002	0.005
+GeneB	-0.87	0.01	0.02
+log2FoldChange: Positive = Upregulated, Negative = Downregulated.
+p-value: Statistical significance of differential expression.
+padj: Adjusted p-value (FDR correction).
+
+
+👨‍💻 Author
+Utsab Ghimire
+ Research Focus: Postharvest senescence & transcriptomics
