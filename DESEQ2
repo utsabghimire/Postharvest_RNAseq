@@ -1,41 +1,73 @@
-FILE NAME: dummy rna seq.txt 
-3 replicates for rach control and treatment --only reads: control and treatments 
+# --------------------------------------------------------------
+# Differential Expression Analysis Using DESeq2
+# Author: Utsab Ghimire
+# Date: YYYY-MM-DD
+# Description:
+#   - This script performs RNA-seq differential expression analysis
+#     using DESeq2.
+#   - It assumes a count matrix with gene names as row names and 
+#     3 replicates each for control and treatment.
+#   - Outputs include differential expression results in text and Excel formats.
+# --------------------------------------------------------------
 
+# ------------------- 1. Install & Load Required Libraries -------------------
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+if (!requireNamespace("DESeq2", quietly = TRUE)) BiocManager::install("DESeq2")
+if (!requireNamespace("openxlsx", quietly = TRUE)) install.packages("openxlsx")
 
-# Import the count data
-countData <- read.table("dummy rna seq.txt", header=TRUE, row.names=1)
+# Load Libraries
+library(DESeq2)
+library(openxlsx)
 
-# Create a design matrix
-design <- as.matrix(data.frame(condition=c(rep("control",3), rep("treatment",3))))
-colnames(design) <- "condition"
+# ------------------- 2. Load the Count Data -------------------
+# Specify the file name (Modify path if needed)
+file_path <- "dummy_rna_seq.txt"
 
-# Run DESeq2
-dds <- DESeqDataSetFromMatrix(countData, design, ~ condition)
+# Check if the file exists before reading
+if (!file.exists(file_path)) {
+  stop("Error: File not found. Please check the file path.")
+}
+
+# Read count matrix (tab-separated file)
+countData <- read.table(file_path, header = TRUE, row.names = 1, sep = "\t")
+
+# Verify data structure
+print(dim(countData))   # Check matrix dimensions
+print(head(countData))  # Display first few rows
+
+# ------------------- 3. Create Experimental Design -------------------
+# Define sample conditions (Modify if needed)
+sample_conditions <- c(rep("control", 3), rep("treatment", 3))
+colData <- data.frame(condition = factor(sample_conditions), row.names = colnames(countData))
+
+# Verify the design matrix
+print(colData)
+
+# ------------------- 4. Run DESeq2 Analysis -------------------
+# Create DESeq2 dataset
+dds <- DESeqDataSetFromMatrix(countData = countData, colData = colData, design = ~ condition)
+
+# Run DESeq2 pipeline
 dds <- DESeq(dds)
 
-# Get the results
+# Get differential expression results
 res <- results(dds)
 
-print(res)
+# Print summary of results
+summary(res)
 
-# View the results
-head(res)
-This script assumes that your count data is in a tab-separated file, with the first row containing the column names "Gene_name", "D7T10C1", "D7T10C2", "D7T10C3", "D14T10M1", "D14T10M2", "D14T10M3" respectively, and that the first column contains the gene names.
-You can adjust the script by checking the format of your data and also if you want to filter the results by some criteria like adjusted p-value or log2 fold change.
-   
-   
-   
-   Download your results
-   
-   
-# Load your results into a dataframe
-results <- read.table("dummy rna seq.txt", header = TRUE, sep = "\t")
+# ------------------- 5. Save & Export Results -------------------
+# Convert results to a data frame
+res_df <- as.data.frame(res)
 
-# Use the write.table function to save the results to a tab-separated file
-write.table(results, file = "rnaseq_results.txt", sep = "\t", row.names = FALSE)
-write.xlsx(results, "rnaseq_results.xlsx")
+# Save results as a tab-separated text file
+write.table(res_df, file = "deseq2_results.txt", sep = "\t", row.names = TRUE, quote = FALSE)
 
+# Save results in Excel format
+write.xlsx(res_df, file = "deseq2_results.xlsx", rowNames = TRUE)
 
-install.packages("utils")
-library(utils)
-download(res, "deseq2_results.txt")
+# ------------------- 6. Download Results (If Running in an Interactive Session) -------------------
+# If using an interactive session, uncomment the following line to download the file:
+# download.file("deseq2_results.txt", destfile = "deseq2_results.txt")
+
+# ------------------- END OF SCRIPT -------------------
